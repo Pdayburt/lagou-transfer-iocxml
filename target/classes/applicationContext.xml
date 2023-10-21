@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+       https://www.springframework.org/schema/aop/spring-aop.xsd
+">
+
+
+    <bean id="accountDao" class="com.lagou.edu.dao.impl.JdbcAccountDaoImpl"
+    init-method="init" destroy-method="destroy">
+<!--        <constructor-arg name="connectionUtils" ref="connectionUtils"/>-->
+<!--        <constructor-arg name="money" value=""/>-->
+<!--        <constructor-arg index="2" value=""/>-->
+<!--        <constructor-arg index="3" value=""/>-->
+    </bean>
+
+    <bean id="transferService" class="com.lagou.edu.service.impl.TransferServiceImpl" >
+<!--        set + name 锁定传值的set方法，通过反射技术即可调用传值-->
+        <property name="AccountDao" ref="accountDao"></property>
+    </bean>
+
+<!--    <bean id="connectionUtils" class="com.lagou.edu.utils.ConnectionUtils"></bean>-->
+
+<!--    <bean id="connectionUtils" class="com.lagou.edu.factory.CreateBeanFactory"-->
+<!--          factory-method="getConnectionUtils"></bean>-->
+    <bean id="createBeanFactory"  class="com.lagou.edu.factory.CreateBeanFactory"></bean>
+    <bean id="connectionUtils" factory-bean="createBeanFactory" factory-method="getInstance"></bean>
+
+
+    <bean id="transactionManager" class="com.lagou.edu.utils.TransactionManager">
+        <property name="ConnectionUtils" ref="connectionUtils"></property>
+    </bean>
+
+    <bean id="proxyFactory" class="com.lagou.edu.factory.ProxyFactory">
+        <property name="TransactionManager" ref="transactionManager"></property>
+    </bean>
+
+</beans>
